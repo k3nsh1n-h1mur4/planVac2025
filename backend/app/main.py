@@ -37,6 +37,34 @@ def create_app():
             return redirect(url_for('routes.index'))
         return render_template('createUser.html')
 
+    @app.route('/listUsers', methods=['GET'])
+    def list_users():
+        users = User.query.all()
+        return render_template('list.html', users=users)
+    
+    @app.route('/delete_user/<id>', methods=['GET', 'POST'])
+    def delete_user(id):
+        user = User.query.get(id)
+        db.session.delete(user)
+        db.session.commit()
+        flash('User deleted successfully')
+        return redirect(url_for('list_users'))
+    
+    @app.route('/update_user/<id>', methods=['GET', 'POST'])
+    def update_user(id):
+        user = User.query.get(id)
+        if request.method == 'POST':
+            username = request.form['username']
+            email = request.form['email']
+            password = request.form['password']
+            user.username = username
+            user.email = email
+            user.password = password
+            db.session.commit()
+            flash('User updated successfully')
+            return redirect(url_for('list_users'))
+        return render_template('updateUser.html', user=user)
+
 
 
     return app

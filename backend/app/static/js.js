@@ -13,3 +13,8 @@ form.addEventListener('submit', (e) => {
     body: formData,
   });
 });
+
+
+const data = await fetch('/listUsers');
+const users = await data.json();
+
