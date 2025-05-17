@@ -1,4 +1,5 @@
 import os
+import jwt
 from decouple import config
 import psycopg2
 
@@ -12,7 +13,7 @@ def create_app():
     app = Flask(__name__, static_folder='static', template_folder='templates')
     CORS(app, resources={r"/*": {"origins": "http://localhost:4321"}})
     app.config['SECRET_KEY'] = os.urandom(24)
-    print(app.config['SECRET_KEY'])
+    #print(app.config['SECRET_KEY'])
     app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://postgres:Z4dk13l2017**@localhost/planvac2025'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -24,12 +25,24 @@ def create_app():
         from .routes import routes
         app.register_blueprint(routes)
 
+    payload = {
+        'username': 'admin',
+        'password': 'admin',
+        'email': 'admin@admin.com'
+    }
+    token = jwt.encode(payload, app.config['SECRET_KEY'], algorithm='HS256')
+    print(token)
+    decode_token = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])
+    print(decode_token['username'])
+    
+
     @app.route('/createUser', methods=['GET', 'POST'])
     def create_user():
         if request.method == 'POST':
             username = request.form['username']
             email = request.form['email']
             password = request.form['password']
+            
             user = User(username=username, email=email, password=password)
             db.session.add(user)
             db.session.commit()
