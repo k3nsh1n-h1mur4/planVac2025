@@ -14,7 +14,7 @@ def create_app():
     CORS(app, resources={r"/*": {"origins": "http://localhost:4321"}})
     app.config['SECRET_KEY'] = os.urandom(24)
     #print(app.config['SECRET_KEY'])
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://postgres:Z4dk13l2017**@localhost/planvac2025'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://@localhost/planvac2025'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     with app.app_context():
