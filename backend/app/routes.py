@@ -4,6 +4,8 @@ from .models import db, User
 
 routes = Blueprint('routes', __name__)
 
+
+"""
 @routes.post('/createUser')
 def create_user():
     if request.method == 'POST':
@@ -15,4 +17,4 @@ def create_user():
         db.session.commit()
         flash('User created successfully')
         return redirect(url_for('routes.index'))
-    return render_template('create_user.html')
+    return render_template('create_user.html')"""

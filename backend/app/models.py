@@ -25,6 +25,7 @@ class User(db.Model):
     username: Mapped[str] = mapped_column(unique=True, nullable=False)
     email: Mapped[str] = mapped_column(unique=True, nullable=False)
     password: Mapped[str] = mapped_column(nullable=False)
+    is_admin:Mapped[bool] = mapped_column(default=False)
     createdat: Mapped[datetime] = mapped_column(insert_default=func.now(), nullable=False)
 
     def __repr__(self):

@@ -23,9 +23,14 @@ def create_app():
         db.init_app(app)
         db.create_all()
         from .routes import routes
+        from .users import users
+        from .admin import admin
         app.register_blueprint(routes)
+        app.register_blueprint(users)
+        app.register_blueprint(admin, url_prefix='/admin')
 
-    payload = {
+    
+    """payload = {
         'username': 'admin',
         'password': 'admin',
         'email': 'admin@admin.com'
@@ -33,8 +38,7 @@ def create_app():
     token = jwt.encode(payload, app.config['SECRET_KEY'], algorithm='HS256')
     print(token)
     decode_token = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])
-    print(decode_token['username'])
-    
+    print(decode_token['username'])"""
 
     @app.route('/createUser', methods=['GET', 'POST'])
     def create_user():
@@ -42,12 +46,18 @@ def create_app():
             username = request.form['username']
             email = request.form['email']
             password = request.form['password']
-            
-            user = User(username=username, email=email, password=password)
+            payload = {
+                'username': username,
+                'email': email,
+                'password': password,
+            } 
+            token = jwt.encode(payload, app.config['SECRET_KEY'], algorithm='HS256')
+            print(token)
+            user = User(username=username, email=email, password=token)
             db.session.add(user)
             db.session.commit()
             flash('User created successfully')
-            return redirect(url_for('routes.index'))
+            return redirect(url_for('list_users'))
         return render_template('createUser.html')
 
     @app.route('/listUsers', methods=['GET'])
